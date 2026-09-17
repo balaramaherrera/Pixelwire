@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar tarjeta | RicardoInfoTv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="editor-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">RICARDO<span>INFOTV</span></a>
+      <a href="index.html" class="editor-back">Volver a noticias</a>
+    </div>
+  </header>
+
+  <main class="editor-main">
+    <div class="wrap">
+      <div class="editor-header">
+        <h1 id="editor-title">Editar tarjeta</h1>
+        <p id="editor-description">Actualiza la información que aparece en la portada.</p>
+      </div>
+      <section class="editor-panel" aria-labelledby="editor-title">
+        <form class="editor-form" id="editor-form">
+          <div class="editor-field">
+            <label for="title">Título</label>
+            <input id="title" name="title" type="text" required maxlength="140">
+          </div>
+          <div class="editor-field">
+            <label for="category">Categoría</label>
+            <input id="category" name="category" type="text" required maxlength="40">
+          </div>
+          <div class="editor-field" id="section-field" hidden>
+            <label for="section">Sección donde se muestra</label>
+            <select id="section" name="section"></select>
+          </div>
+          <div class="editor-field">
+            <label for="author">Autor</label>
+            <input id="author" name="author" type="text" maxlength="60">
+          </div>
+          <div class="editor-field">
+            <label for="time">Tiempo de publicación</label>
+            <input id="time" name="time" type="text" maxlength="40" placeholder="Hace 5 min">
+          </div>
+          <div class="editor-field">
+            <label for="image">URL de imagen</label>
+            <input id="image" name="image" type="url" required>
+          </div>
+          <div class="editor-field">
+            <label for="content">Contenido de la noticia</label>
+            <textarea id="content" name="content" rows="10" placeholder="Escribe aquí el texto completo de la noticia. Separa los párrafos dejando una línea en blanco entre ellos."></textarea>
+          </div>
+          <p class="editor-error" id="editor-error" role="alert" hidden></p>
+          <div class="editor-actions">
+            <button class="editor-button editor-button--save" type="submit">Guardar cambios</button>
+            <a class="editor-button editor-button--cancel" href="index.html">Cancelar</a>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/news.js"></script>
+  <script src="js/sections.js"></script>
+  <script>
+    const cardId = new URLSearchParams(window.location.search).get("id");
+    const card = getCard(cardId);
+    const form = document.getElementById("editor-form");
+    const error = document.getElementById("editor-error");
+    const sectionField = document.getElementById("section-field");
+    const sectionSelect = document.getElementById("section");
+
+    if (!card) {
+      form.hidden = true;
+      error.hidden = false;
+      error.textContent = "No se encontró la tarjeta que quieres editar.";
+    } else {
+      const editingCustomCard = !isDefaultCard(cardId);
+
+      if (editingCustomCard) {
+        sectionField.hidden = false;
+        const sections = getSections();
+        Object.entries(sections).forEach(([sectionId, section]) => {
+          const option = document.createElement("option");
+          option.value = sectionId;
+          option.textContent = section.title;
+          sectionSelect.appendChild(option);
+        });
+        sectionSelect.value = card.section || "analisis";
+      }
+
+      ["title", "category", "author", "time", "image", "content"].forEach((field) => {
+        document.getElementById(field).value = card[field] || "";
+      });
+      document.getElementById("editor-title").textContent = card.title;
+      document.getElementById("editor-description").textContent = `Editando: ${card.title}`;
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        if (!editingCustomCard) delete data.section;
+        saveCardEdit(cardId, data);
+        window.location.href = editingCustomCard ? `seccion.html?section=${encodeURIComponent(data.section)}` : "index.html";
+      });
+    }
+  </script>
+</body>
+</html>

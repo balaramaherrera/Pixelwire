@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Panel de usuario de RicardoInfoTv.">
+<title>Mi cuenta | RicardoInfoTv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body class="editor-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">RICARDO<span>INFOTV</span></a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="seccion.html?section=analisis">Política y geopolítica</a>
+        <a href="seccion.html?section=opinion">Análisis y opinión</a>
+        <a href="seccion.html?section=bono">Bono y banca</a>
+        <a href="seccion.html?section=cultura">Cultura y economía</a>
+        <a href="cuenta.html" aria-current="page">Mi cuenta</a>
+      </nav>
+      <a href="index.html" class="editor-back">Volver a noticias</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menú">☰</button>
+    </div>
+  </header>
+
+  <main class="account-main">
+    <div class="wrap">
+      <header class="account-header">
+        <div>
+          <span class="tag tag--accent">Panel de usuario</span>
+          <h1 id="account-title">Mi cuenta</h1>
+          <p id="account-welcome">Administra tu acceso a RicardoInfoTv.</p>
+        </div>
+        <button class="logout-button" id="logout-button" type="button">Cerrar sesión</button>
+      </header>
+
+      <div class="account-layout">
+        <section class="account-panel" aria-labelledby="profile-title">
+          <h2 id="profile-title">Información de perfil</h2>
+          <dl class="account-details">
+            <div class="account-detail">
+              <dt>Nombre</dt>
+              <dd id="account-name"></dd>
+            </div>
+            <div class="account-detail">
+              <dt>Correo electrónico</dt>
+              <dd id="account-email"></dd>
+            </div>
+            <div class="account-detail">
+              <dt>Cuenta creada</dt>
+              <dd id="account-created"></dd>
+            </div>
+          </dl>
+        </section>
+
+        <aside class="account-panel account-side">
+          <h2>Tu espacio</h2>
+          <p><strong>Sesión activa.</strong> Desde aquí puedes volver a las noticias y revisar las distintas secciones de RicardoInfoTv.</p>
+          <a class="editor-button editor-button--save" href="index.html">Ir a noticias</a>
+          <button class="logout-button" id="export-users" type="button">Descargar cuentas (.txt)</button>
+          <p class="account-security-note">La exportación no incluye contraseñas.</p>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/main.js?v=2"></script>
+  <script src="js/auth.js?v=3"></script>
+  <script>
+    const session = JSON.parse(sessionStorage.getItem("ricardoinfotv-session") || "null");
+    if (!session) {
+      window.location.href = "login.html";
+    } else {
+      const users = JSON.parse(localStorage.getItem("ricardoinfotv-users") || "[]");
+      const savedUser = users.find(user => user.id === session.id || user.email === session.email);
+      const accountCreatedAt = session.createdAt || savedUser?.createdAt;
+      document.getElementById("account-title").textContent = `Hola, ${session.name}`;
+      document.getElementById("account-welcome").textContent = "Tu sesión de RicardoInfoTv está activa.";
+      document.getElementById("account-name").textContent = session.name;
+      document.getElementById("account-email").textContent = session.email;
+      const created = accountCreatedAt ? new Date(accountCreatedAt) : null;
+      document.getElementById("account-created").textContent = created && !Number.isNaN(created.getTime())
+        ? created.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })
+        : "Cuenta activa";
+      document.getElementById("logout-button").addEventListener("click", () => {
+        sessionStorage.removeItem("ricardoinfotv-session");
+        window.location.href = "index.html";
+      });
+      document.getElementById("export-users").addEventListener("click", () => {
+        const users = JSON.parse(localStorage.getItem("ricardoinfotv-users") || "[]");
+        const lines = [
+          "RICARDOINFOTV - REGISTRO DE CUENTAS",
+          `Exportado: ${new Date().toLocaleString("es-ES")}`,
+          "",
+          ...users.map((user, index) => [
+            `Cuenta ${index + 1}`,
+            `Nombre: ${user.name}`,
+            `Correo: ${user.email}`,
+            `ID: ${user.id}`,
+            `Creada: ${new Date(user.createdAt).toLocaleString("es-ES")}`,
+            ""
+          ].join("\n"))
+        ];
+        const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "cuentas.txt";
+        link.click();
+        URL.revokeObjectURL(link.href);
+      });
+    }
+  </script>
+</body>
+</html>

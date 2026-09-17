@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noticia | RicardoInfoTv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">RICARDO<span>INFOTV</span></a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="seccion.html?section=analisis">Política y geopolítica</a>
+        <a href="seccion.html?section=opinion">Análisis y opinión</a>
+        <a href="seccion.html?section=bono">Bono y banca</a>
+        <a href="seccion.html?section=cultura">Cultura y economía</a>
+        <a href="cuenta.html">Mi cuenta</a>
+      </nav>
+      <a href="index.html" class="editor-back">Volver a noticias</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menú">☰</button>
+    </div>
+  </header>
+
+  <main class="article-main">
+    <div class="wrap">
+      <article class="article-panel" id="article-panel">
+        <span class="tag tag--accent" id="article-category"></span>
+        <h1 id="article-title"></h1>
+        <p class="article-meta" id="article-meta"></p>
+        <div class="article-media" id="article-media"></div>
+        <div class="article-body" id="article-body"></div>
+        <div class="editor-actions">
+          <a class="editor-button editor-button--save" id="article-edit-link" href="editar.html">Editar esta noticia</a>
+          <a class="editor-button editor-button--cancel" href="index.html">Volver a noticias</a>
+        </div>
+      </article>
+      <p class="editor-error" id="article-error" role="alert" hidden></p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>© 2026 RicardoInfoTv. Todos los derechos reservados.</div>
+      <div class="footer-links"><a href="#">Contacto</a> · <a href="#">Quiénes somos</a> · <a href="#">Aviso legal</a></div>
+    </div>
+  </footer>
+
+  <script src="js/news.js"></script>
+  <script src="js/main.js?v=2"></script>
+  <script>
+    const cardId = new URLSearchParams(window.location.search).get("id");
+    const card = getCard(cardId);
+    const panel = document.getElementById("article-panel");
+    const error = document.getElementById("article-error");
+
+    if (!card) {
+      panel.hidden = true;
+      error.hidden = false;
+      error.textContent = "No se encontró la noticia que buscas.";
+    } else {
+      document.title = `${card.title} | RicardoInfoTv`;
+      document.getElementById("article-category").textContent = card.category || "RicardoInfoTv";
+      document.getElementById("article-title").textContent = card.title;
+      document.getElementById("article-meta").textContent = [card.author, card.time].filter(Boolean).join(" · ");
+      document.getElementById("article-media").style.backgroundImage = `url("${card.image}")`;
+      document.getElementById("article-edit-link").href = `editar.html?id=${encodeURIComponent(cardId)}`;
+
+      const body = document.getElementById("article-body");
+      const content = (card.content || "").trim();
+      if (content) {
+        content.split(/\n\s*\n/).forEach((paragraph) => {
+          const p = document.createElement("p");
+          p.textContent = paragraph.trim();
+          body.appendChild(p);
+        });
+      } else {
+        const p = document.createElement("p");
+        p.className = "article-body-empty";
+        p.textContent = "Todavía no se agregó el contenido de esta noticia. Podés escribirlo desde \"Editar esta noticia\".";
+        body.appendChild(p);
+      }
+    }
+  </script>
+</body>
+</html>

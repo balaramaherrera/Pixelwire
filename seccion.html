@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sección | RicardoInfoTv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="section-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">RICARDO<span>INFOTV</span></a>
+      <nav class="section-nav" aria-label="Secciones">
+        <a href="seccion.html?section=analisis">Política y geopolítica</a>
+        <a href="seccion.html?section=opinion">Análisis y opinión</a>
+        <a href="seccion.html?section=bono">Bono y banca</a>
+        <a href="seccion.html?section=cultura">Cultura y economía</a>
+      </nav>
+      <a href="index.html" class="editor-back">Inicio</a>
+    </div>
+  </header>
+
+  <main class="section-main">
+    <div class="wrap">
+      <section class="section-hero" id="section-hero">
+        <div>
+          <span class="section-eyebrow">Sección RicardoInfoTv</span>
+          <h1 id="section-title"></h1>
+          <p id="section-description"></p>
+        </div>
+        <div class="section-hero-actions">
+          <a class="editor-button editor-button--cancel" id="add-news-link" href="agregar-noticia.html">+ Agregar noticia</a>
+          <a class="editor-button editor-button--save" id="edit-section-link" href="editar-seccion.html">Editar sección</a>
+        </div>
+      </section>
+
+      <section class="section section-content">
+        <div class="section-head">
+          <span class="bar"></span>
+          <h2>Contenido destacado</h2>
+        </div>
+        <div class="section-cards" id="section-cards"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>© 2026 RicardoInfoTv. Todos los derechos reservados.</div>
+      <a href="index.html">Volver a noticias</a>
+    </div>
+  </footer>
+
+  <script src="js/news.js"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/sections.js"></script>
+  <script>
+    const sectionId = new URLSearchParams(window.location.search).get("section") || "analisis";
+    const sections = getSections();
+    const section = sections[sectionId] || sections.analisis;
+    const sectionTitle = document.getElementById("section-title");
+    const sectionDescription = document.getElementById("section-description");
+    const hero = document.getElementById("section-hero");
+    const editLink = document.getElementById("edit-section-link");
+    const addNewsLink = document.getElementById("add-news-link");
+
+    document.title = `${section.title} | RicardoInfoTv`;
+    sectionTitle.textContent = section.title;
+    sectionDescription.textContent = section.description;
+    hero.style.setProperty("--section-accent", section.color);
+    editLink.href = `editar-seccion.html?section=${encodeURIComponent(sectionId)}`;
+    addNewsLink.href = `agregar-noticia.html?section=${encodeURIComponent(sectionId)}`;
+
+    const container = document.getElementById("section-cards");
+    getSectionCardIds(sectionId).forEach((cardId) => {
+      const card = getCard(cardId);
+      if (!card) return;
+      const article = document.createElement("article");
+      article.className = "section-story";
+      article.innerHTML = `<div class="section-story-media" style="background-image:url('${card.image}')"></div><div class="section-story-body"><span class="tag">${card.category}</span><h2><a href="articulo.html?id=${cardId}">${card.title}</a></h2><p>${[card.author, card.time].filter(Boolean).join(" · ")}</p><a class="read-more-link" href="articulo.html?id=${cardId}">Leer noticia completa →</a><a href="editar.html?id=${cardId}">Editar tarjeta</a></div>`;
+      container.appendChild(article);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar sección | RicardoInfoTv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="editor-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">RICARDO<span>INFOTV</span></a>
+      <a href="index.html" class="editor-back">Volver a noticias</a>
+    </div>
+  </header>
+
+  <main class="editor-main">
+    <div class="wrap">
+      <div class="editor-header">
+        <h1 id="editor-title">Editar sección</h1>
+        <p id="editor-description">Actualiza la presentación de esta sección.</p>
+      </div>
+      <section class="editor-panel" aria-labelledby="editor-title">
+        <form class="editor-form" id="section-form">
+          <div class="editor-field">
+            <label for="title">Nombre de la sección</label>
+            <input id="title" name="title" type="text" required maxlength="40">
+          </div>
+          <div class="editor-field">
+            <label for="description">Descripción</label>
+            <textarea id="description" name="description" rows="4" required maxlength="180"></textarea>
+          </div>
+          <div class="editor-field">
+            <label for="color">Color de acento</label>
+            <input id="color" name="color" type="color" required>
+          </div>
+          <p class="editor-error" id="editor-error" role="alert" hidden></p>
+          <div class="editor-actions">
+            <button class="editor-button editor-button--save" type="submit">Guardar cambios</button>
+            <a class="editor-button editor-button--cancel" id="cancel-link" href="index.html">Cancelar</a>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/sections.js"></script>
+  <script>
+    const sectionId = new URLSearchParams(window.location.search).get("section");
+    const section = getSections()[sectionId];
+    const form = document.getElementById("section-form");
+    const error = document.getElementById("editor-error");
+
+    if (!section) {
+      form.hidden = true;
+      error.hidden = false;
+      error.textContent = "No se encontró la sección que quieres editar.";
+    } else {
+      document.title = `Editar ${section.title} | RicardoInfoTv`;
+      document.getElementById("editor-title").textContent = `Editar ${section.title}`;
+      document.getElementById("editor-description").textContent = `Personaliza cómo se presenta la sección ${section.title}.`;
+      document.getElementById("title").value = section.title;
+      document.getElementById("description").value = section.description;
+      document.getElementById("color").value = section.color;
+      document.getElementById("cancel-link").href = `seccion.html?section=${encodeURIComponent(sectionId)}`;
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        saveSection(sectionId, data);
+        window.location.href = `seccion.html?section=${encodeURIComponent(sectionId)}`;
+      });
+    }
+  </script>
+</body>
+</html>
