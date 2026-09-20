@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelWire — Noticias de videojuegos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="recharge-page">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">PIXEL<span>WIRE</span></a>
+
+      <nav class="main-nav" id="main-nav">
+        <a href="seccion.html?section=noticias">Noticias</a>
+        <a href="seccion.html?section=resenas">Reseñas</a>
+        <a href="seccion.html?section=guias">Guías</a>
+        <a href="seccion.html?section=videos">Videos</a>
+        <a href="seccion.html?section=ofertas">Ofertas</a>
+        <a href="ventas.html">Ventas</a>
+        <a href="recargas.html">Recargas</a>
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html" class="nav-register">Registrarse</a>
+        <a href="cuenta.html">Mi cuenta</a>
+      </nav>
+
+      <div class="search-pill">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span>Buscar…</span>
+      </div>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú">☰</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+
+      <article class="main-story" id="main-story" data-card-id="main-story">
+        <div class="main-story-media"></div>
+        <div class="main-story-overlay">
+          <span class="tag tag--accent">Exclusiva</span>
+          <h1>Análisis: cómo cambia el panorama de los grandes lanzamientos este año</h1>
+          <p class="meta">Por Redacción PixelWire · Hace 12 min</p>
+        </div>
+      </article>
+
+      <div class="side-stories" id="side-stories">
+        <article class="side-card" data-card-id="side-story-1">
+          <div class="side-card-media"></div>
+          <div class="side-card-body">
+            <h3>Guía rápida: todo lo que debes saber antes de jugar</h3>
+          </div>
+        </article>
+        <article class="side-card" data-card-id="side-story-2">
+          <div class="side-card-media"></div>
+          <div class="side-card-body">
+            <h3>Rumores sobre la próxima gran secuela toman fuerza</h3>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section recharge-home-section">
+    <div class="wrap">
+      <div class="recharge-home-banner">
+        <span class="recharge-eyebrow">⚡ Recargas instantáneas</span>
+        <h2>Recargá tus juegos favoritos</h2>
+        <p>Diamantes, puntos, Robux y créditos, directo a tu cuenta.</p>
+      </div>
+      <div class="section-head-row">
+        <div class="section-head">
+          <span class="bar bar--recharge"></span>
+          <h2>Juegos disponibles</h2>
+        </div>
+        <a class="editor-button editor-button--cancel" href="recargas.html">Ver todas las recargas</a>
+      </div>
+      <div class="recharge-grid" id="home-recharge-grid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head-row">
+        <div class="section-head">
+          <span class="bar"></span>
+          <h2>Últimas noticias</h2>
+        </div>
+        <a class="editor-button editor-button--cancel" href="agregar-noticia.html">+ Agregar noticia</a>
+      </div>
+
+      <div class="news-grid" id="news-grid">
+        <article class="news-card" data-card-id="news-1">
+          <div class="news-card-media"></div>
+          <div class="news-card-body">
+            <span class="tag">Noticias</span>
+            <h3>Estudio confirma nueva expansión para su título más popular</h3>
+          </div>
+        </article>
+        <article class="news-card" data-card-id="news-2">
+          <div class="news-card-media"></div>
+          <div class="news-card-body">
+            <span class="tag">Reseña</span>
+            <h3>Ponemos a prueba el lanzamiento más esperado del trimestre</h3>
+          </div>
+        </article>
+        <article class="news-card" data-card-id="news-3">
+          <div class="news-card-media"></div>
+          <div class="news-card-body">
+            <span class="tag">Guías</span>
+            <h3>Los mejores trucos que quizá no conocías todavía</h3>
+          </div>
+        </article>
+        <article class="news-card" data-card-id="news-4">
+          <div class="news-card-media"></div>
+          <div class="news-card-body">
+            <span class="tag">Esports</span>
+            <h3>La gran final del torneo regional ya tiene fecha confirmada</h3>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>© 2026 PixelWire. Todos los derechos reservados.</div>
+      <div class="footer-links"><a href="ventas.html">Ventas</a> · <a href="#">Contacto</a> · <a href="#">Quiénes somos</a> · <a href="#">Aviso legal</a></div>
+    </div>
+  </footer>
+
+  <script src="js/news.js"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/recargas-catalog.js"></script>
+  <script>
+    const homeGrid = document.getElementById("home-recharge-grid");
+    getRechargeGames().forEach((game) => {
+      homeGrid.appendChild(buildRechargeGameCard(game));
+    });
+  </script>
+</body>
+</html>

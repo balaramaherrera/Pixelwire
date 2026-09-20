@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar métodos de pago | PixelWire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="editor-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">PIXEL<span>WIRE</span></a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="seccion.html?section=noticias">Noticias</a>
+        <a href="seccion.html?section=resenas">Reseñas</a>
+        <a href="seccion.html?section=guias">Guías</a>
+        <a href="seccion.html?section=videos">Videos</a>
+        <a href="seccion.html?section=ofertas">Ofertas</a>
+        <a href="ventas.html">Ventas</a>
+      </nav>
+      <a href="ventas.html" class="editor-back">Volver a ventas</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menú">☰</button>
+    </div>
+  </header>
+
+  <main class="editor-main">
+    <div class="wrap">
+      <div class="editor-header">
+        <h1>Editar métodos de pago</h1>
+        <p>Introduce los datos de la empresa que verán tus clientes al realizar una compra.</p>
+      </div>
+
+      <form class="payment-editor-form" id="payment-form">
+        <section class="editor-panel payment-editor-panel" aria-labelledby="mobile-title">
+          <h2 id="mobile-title">Pago móvil</h2>
+          <div class="editor-field">
+            <label for="mobileBank">Banco</label>
+            <input id="mobileBank" name="mobileBank" type="text" required maxlength="80" placeholder="Ej. Banco de Venezuela">
+          </div>
+          <div class="editor-field">
+            <label for="mobilePhone">Teléfono</label>
+            <input id="mobilePhone" name="mobilePhone" type="tel" required maxlength="30" placeholder="Ej. 0412-0000000">
+          </div>
+          <div class="editor-field">
+            <label for="mobileId">Cédula o RIF</label>
+            <input id="mobileId" name="mobileId" type="text" required maxlength="30" placeholder="Ej. J-00000000-0">
+          </div>
+        </section>
+
+        <section class="editor-panel payment-editor-panel" aria-labelledby="transfer-title">
+          <h2 id="transfer-title">Transferencia bancaria</h2>
+          <div class="editor-field">
+            <label for="transferBank">Banco</label>
+            <input id="transferBank" name="transferBank" type="text" required maxlength="80" placeholder="Ej. Banco de Venezuela">
+          </div>
+          <div class="editor-field">
+            <label for="transferAccount">Número de cuenta</label>
+            <input id="transferAccount" name="transferAccount" type="text" required maxlength="40" placeholder="Número de cuenta">
+          </div>
+          <div class="editor-field">
+            <label for="transferHolder">Titular</label>
+            <input id="transferHolder" name="transferHolder" type="text" required maxlength="100" placeholder="Nombre o razón social">
+          </div>
+        </section>
+
+        <p class="editor-error" id="payment-error" role="alert" hidden></p>
+        <div class="editor-actions">
+          <button class="editor-button editor-button--save" type="submit">Guardar datos de pago</button>
+          <a class="editor-button editor-button--cancel" href="ventas.html">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/main.js?v=2"></script>
+  <script>
+    const paymentDefaults = {
+      mobileBank: "",
+      mobilePhone: "",
+      mobileId: "",
+      transferBank: "",
+      transferAccount: "",
+      transferHolder: ""
+    };
+    let savedPayments = {};
+    try {
+      savedPayments = JSON.parse(localStorage.getItem("pixelwire-payments") || "{}");
+    } catch (error) {
+      savedPayments = {};
+    }
+    const paymentData = { ...paymentDefaults, ...savedPayments };
+    const form = document.getElementById("payment-form");
+    Object.keys(paymentDefaults).forEach((field) => {
+      document.getElementById(field).value = paymentData[field];
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      localStorage.setItem("pixelwire-payments", JSON.stringify(Object.fromEntries(new FormData(form).entries())));
+      window.location.href = "ventas.html#metodos-pago";
+    });
+  </script>
+</body>
+</html>

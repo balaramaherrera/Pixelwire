@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recarga | PixelWire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="recharge-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">PIXEL<span>WIRE</span></a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="seccion.html?section=noticias">Noticias</a>
+        <a href="seccion.html?section=resenas">Reseñas</a>
+        <a href="seccion.html?section=guias">Guías</a>
+        <a href="seccion.html?section=videos">Videos</a>
+        <a href="seccion.html?section=ofertas">Ofertas</a>
+        <a href="ventas.html">Ventas</a>
+        <a href="recargas.html" aria-current="page">Recargas</a>
+        <a href="cuenta.html">Mi cuenta</a>
+      </nav>
+      <a href="recargas.html#carrito" class="cart-link recharge-cart-link">
+        ⚡
+        <span class="cart-badge" id="recharge-cart-count" hidden>0</span>
+      </a>
+      <a href="recargas.html" class="editor-back">Volver a recargas</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menú">☰</button>
+    </div>
+  </header>
+
+  <main class="recharge-main">
+    <div class="wrap">
+      <section class="recharge-detail-panel" id="recharge-detail-panel">
+        <div class="recharge-detail-hero" id="recharge-detail-hero">
+          <div class="recharge-detail-icon" id="recharge-detail-icon"></div>
+          <span class="recharge-detail-tag" id="recharge-detail-unit"></span>
+          <h1 id="recharge-detail-title"></h1>
+        </div>
+
+        <form class="recharge-form" id="recharge-form">
+          <div class="editor-field">
+            <label id="recharge-id-label" for="playerId">ID de jugador</label>
+            <input id="playerId" name="playerId" type="text" required maxlength="60" placeholder="Ingresa tu ID">
+          </div>
+          <div class="editor-field" id="recharge-server-field" hidden>
+            <label id="recharge-server-label" for="server">Servidor</label>
+            <input id="server" name="server" type="text" maxlength="40" placeholder="Ingresa tu servidor">
+          </div>
+
+          <div class="editor-field">
+            <label>Elegí un paquete</label>
+            <div class="package-grid" id="package-grid"></div>
+          </div>
+
+          <p class="editor-error" id="recharge-error" role="alert" hidden></p>
+
+          <div class="recharge-summary">
+            <span>Total a pagar</span>
+            <strong id="recharge-selected-price">$0.00</strong>
+          </div>
+
+          <div class="editor-actions">
+            <button class="editor-button editor-button--save" type="submit">Agregar al carrito</button>
+            <a class="editor-button editor-button--cancel" href="recargas.html">Cancelar</a>
+          </div>
+        </form>
+      </section>
+      <p class="editor-error" id="game-not-found" role="alert" hidden>No se encontró el juego que buscas.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>© 2026 PixelWire. Todos los derechos reservados.</div>
+      <div class="footer-links"><a href="ventas.html">Ventas</a> · <a href="#">Contacto</a> · <a href="#">Quiénes somos</a> · <a href="#">Aviso legal</a></div>
+    </div>
+  </footer>
+
+  <script src="js/news.js"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/recargas-catalog.js"></script>
+  <script src="js/recharge-cart.js"></script>
+  <script>
+    const gameId = new URLSearchParams(window.location.search).get("id");
+    const game = getRechargeGame(gameId);
+    const panel = document.getElementById("recharge-detail-panel");
+    const notFound = document.getElementById("game-not-found");
+
+    if (!game) {
+      panel.hidden = true;
+      notFound.hidden = false;
+    } else {
+      document.title = `Recargar ${game.name} | PixelWire`;
+      document.getElementById("recharge-detail-hero").style.background = getRechargeArtBackground(game);
+      document.getElementById("recharge-detail-hero").style.viewTransitionName = `recharge-art-${game.id}`;
+      document.getElementById("recharge-detail-icon").innerHTML = game.icon;
+      document.getElementById("recharge-detail-unit").textContent = game.unit;
+      document.getElementById("recharge-detail-title").textContent = `Recargar ${game.name}`;
+      document.getElementById("recharge-id-label").textContent = game.idLabel;
+      document.getElementById("playerId").placeholder = game.idLabel;
+
+      const serverField = document.getElementById("recharge-server-field");
+      if (game.serverLabel) {
+        serverField.hidden = false;
+        document.getElementById("recharge-server-label").textContent = game.serverLabel;
+        document.getElementById("server").placeholder = game.serverLabel;
+        document.getElementById("server").required = true;
+      }
+
+      let selectedPackageId = null;
+      const packageGrid = document.getElementById("package-grid");
+      const priceElement = document.getElementById("recharge-selected-price");
+
+      function pulseValue(el) {
+        el.classList.remove("value-pulse");
+        void el.offsetWidth;
+        el.classList.add("value-pulse");
+      }
+
+      game.packages.forEach((pkg, index) => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "package-card";
+        card.dataset.package = pkg.id;
+        card.innerHTML = `<span class="package-label">${pkg.label}</span><span class="package-price">$${pkg.price.toFixed(2)}</span>`;
+        card.addEventListener("click", () => {
+          selectedPackageId = pkg.id;
+          packageGrid.querySelectorAll(".package-card").forEach((el) => el.classList.remove("is-selected"));
+          card.classList.add("is-selected");
+          priceElement.textContent = `$${pkg.price.toFixed(2)}`;
+          pulseValue(priceElement);
+        });
+        packageGrid.appendChild(card);
+        if (index === 0) card.click();
+      });
+
+      const form = document.getElementById("recharge-form");
+      const error = document.getElementById("recharge-error");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!selectedPackageId) {
+          error.hidden = false;
+          error.textContent = "Elegí un paquete para continuar.";
+          return;
+        }
+        const pkg = getRechargePackage(game.id, selectedPackageId);
+        const formData = new FormData(form);
+        addRechargeToCart({
+          gameId: game.id,
+          gameName: game.name,
+          packageId: pkg.id,
+          packageLabel: pkg.label,
+          price: pkg.price,
+          idLabel: game.idLabel,
+          playerId: formData.get("playerId"),
+          serverLabel: game.serverLabel || "",
+          server: formData.get("server") || ""
+        });
+        window.location.href = "recargas.html#carrito";
+      });
+    }
+  </script>
+</body>
+</html>

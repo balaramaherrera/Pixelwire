@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Recarga diamantes, puntos y créditos de tus videojuegos favoritos en PixelWire.">
+<title>Recargas | PixelWire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="recharge-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">PIXEL<span>WIRE</span></a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="seccion.html?section=noticias">Noticias</a>
+        <a href="seccion.html?section=resenas">Reseñas</a>
+        <a href="seccion.html?section=guias">Guías</a>
+        <a href="seccion.html?section=videos">Videos</a>
+        <a href="seccion.html?section=ofertas">Ofertas</a>
+        <a href="ventas.html">Ventas</a>
+        <a href="recargas.html" aria-current="page">Recargas</a>
+        <a href="cuenta.html">Mi cuenta</a>
+      </nav>
+      <a href="#carrito" class="cart-link recharge-cart-link">
+        ⚡
+        <span class="cart-badge" id="recharge-cart-count" hidden>0</span>
+      </a>
+      <a href="index.html" class="editor-back">Volver al inicio</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menú">☰</button>
+    </div>
+  </header>
+
+  <main class="recharge-main">
+    <section class="recharge-hero">
+      <div class="wrap recharge-hero-inner">
+        <span class="recharge-eyebrow">⚡ Recargas instantáneas</span>
+        <h1>Recargá tus juegos favoritos</h1>
+        <p>Diamantes, puntos, Robux y créditos, directo a tu cuenta. Rápido, seguro y en tu moneda.</p>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <section class="section" aria-labelledby="recharge-catalog-title">
+        <div class="section-head">
+          <span class="bar bar--recharge"></span>
+          <h2 id="recharge-catalog-title">Juegos disponibles</h2>
+        </div>
+        <div class="recharge-grid" id="recharge-grid"></div>
+      </section>
+
+      <section class="cart-section recharge-cart-section" id="carrito" aria-labelledby="recharge-cart-title">
+        <div class="sales-section-heading">
+          <h2 class="sales-subtitle" id="recharge-cart-title">Tu carrito de recargas</h2>
+          <button class="editor-button editor-button--cancel" id="recharge-cart-clear" type="button">Vaciar carrito</button>
+        </div>
+        <div class="cart-panel">
+          <p class="cart-empty" id="recharge-cart-empty">Todavía no agregaste ninguna recarga.</p>
+          <div class="cart-items" id="recharge-cart-items"></div>
+          <div class="cart-summary">
+            <span>Total</span>
+            <strong id="recharge-cart-total">$0.00</strong>
+          </div>
+          <a class="editor-button editor-button--save cart-checkout" href="ventas.html#metodos-pago">Ir a pagar</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>© 2026 PixelWire. Todos los derechos reservados.</div>
+      <div class="footer-links"><a href="ventas.html">Ventas</a> · <a href="#">Contacto</a> · <a href="#">Quiénes somos</a> · <a href="#">Aviso legal</a></div>
+    </div>
+  </footer>
+
+  <script src="js/news.js"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/recargas-catalog.js"></script>
+  <script src="js/recharge-cart.js"></script>
+  <script>
+    function renderRechargeGrid() {
+      const grid = document.getElementById("recharge-grid");
+      grid.innerHTML = "";
+      getRechargeGames().forEach((game) => {
+        grid.appendChild(buildRechargeGameCard(game));
+      });
+    }
+
+    function renderRechargeCart() {
+      const cart = getRechargeCart();
+      const list = document.getElementById("recharge-cart-items");
+      const emptyMessage = document.getElementById("recharge-cart-empty");
+      const totalElement = document.getElementById("recharge-cart-total");
+
+      list.innerHTML = "";
+      emptyMessage.hidden = cart.length > 0;
+
+      cart.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "cart-item";
+        row.innerHTML = `
+          <div class="cart-item-info">
+            <strong>${item.gameName} · ${item.packageLabel}</strong>
+            <span>${item.idLabel}: ${item.playerId}${item.server ? ` · ${item.serverLabel}: ${item.server}` : ""}</span>
+          </div>
+          <div class="cart-item-controls">
+            <span class="cart-item-subtotal">$${item.price.toFixed(2)}</span>
+            <button class="cart-remove" type="button" data-line="${item.lineId}" aria-label="Quitar ${item.gameName}">✕</button>
+          </div>`;
+        list.appendChild(row);
+      });
+
+      totalElement.textContent = `$${getRechargeCartTotal().toFixed(2)}`;
+      totalElement.classList.remove("value-pulse");
+      void totalElement.offsetWidth;
+      totalElement.classList.add("value-pulse");
+
+      list.querySelectorAll(".cart-remove").forEach((button) => {
+        button.addEventListener("click", () => {
+          removeRechargeFromCart(button.dataset.line);
+          renderRechargeCart();
+        });
+      });
+    }
+
+    document.getElementById("recharge-cart-clear").addEventListener("click", () => {
+      clearRechargeCart();
+      renderRechargeCart();
+    });
+
+    renderRechargeGrid();
+    renderRechargeCart();
+  </script>
+</body>
+</html>

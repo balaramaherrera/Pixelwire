@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Métodos de pago de PixelWire.">
+<title>Ventas | PixelWire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="index.html" class="logo">PIXEL<span>WIRE</span></a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="seccion.html?section=noticias">Noticias</a>
+        <a href="seccion.html?section=resenas">Reseñas</a>
+        <a href="seccion.html?section=guias">Guías</a>
+        <a href="seccion.html?section=videos">Videos</a>
+        <a href="seccion.html?section=ofertas">Ofertas</a>
+        <a href="ventas.html" aria-current="page">Ventas</a>
+        <a href="recargas.html">Recargas</a>
+        <a href="cuenta.html">Mi cuenta</a>
+      </nav>
+      <a href="#carrito" class="cart-link">
+        🛒 Carrito
+        <span class="cart-badge" id="cart-count" hidden>0</span>
+      </a>
+      <a href="index.html" class="editor-back">Volver al inicio</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menú">☰</button>
+    </div>
+  </header>
+
+  <main class="sales-main">
+    <div class="wrap">
+      <header class="sales-header">
+        <span class="tag tag--accent">Ventas PixelWire</span>
+        <h1>Accesorios para jugar mejor</h1>
+        <p>Explora nuestros productos y completa tu compra usando Pago móvil o Transferencia bancaria.</p>
+      </header>
+
+      <section class="products-section" aria-labelledby="products-title">
+        <div class="section-head">
+          <span class="bar"></span>
+          <h2 id="products-title">Accesorios</h2>
+        </div>
+        <div class="products-grid" id="products-grid"></div>
+      </section>
+
+      <section class="cart-section" id="carrito" aria-labelledby="cart-title">
+        <div class="sales-section-heading">
+          <h2 class="sales-subtitle" id="cart-title">Tu carrito</h2>
+          <button class="editor-button editor-button--cancel" id="cart-clear" type="button">Vaciar carrito</button>
+        </div>
+        <div class="cart-panel">
+          <p class="cart-empty" id="cart-empty">Todavía no agregaste productos al carrito.</p>
+          <div class="cart-items" id="cart-items"></div>
+          <div class="cart-summary">
+            <span>Total</span>
+            <strong id="cart-total">$0.00</strong>
+          </div>
+          <a class="editor-button editor-button--save cart-checkout" href="#metodos-pago">Ir a pagar</a>
+        </div>
+      </section>
+
+      <section class="payment-grid" id="metodos-pago" aria-labelledby="payment-title">
+        <div class="sales-section-heading">
+          <h2 class="sales-subtitle" id="payment-title">Métodos de pago</h2>
+          <a class="editor-button editor-button--cancel" href="editar-pagos.html">Editar métodos de pago</a>
+        </div>
+        <article class="payment-card">
+          <div class="payment-icon" aria-hidden="true">M</div>
+          <h2>Pago móvil</h2>
+          <p>Realiza el pago desde la aplicación móvil de tu banco.</p>
+          <dl class="payment-details">
+            <div class="payment-detail">
+              <dt>Banco</dt>
+              <dd id="mobile-bank">Configurar banco</dd>
+            </div>
+            <div class="payment-detail">
+              <dt>Teléfono</dt>
+              <dd id="mobile-phone">Configurar teléfono</dd>
+            </div>
+            <div class="payment-detail">
+              <dt>Cédula o RIF</dt>
+              <dd id="mobile-id">Configurar identificación</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="payment-card">
+          <div class="payment-icon" aria-hidden="true">T</div>
+          <h2>Transferencia bancaria</h2>
+          <p>Envía el pago directamente a la cuenta bancaria indicada.</p>
+          <dl class="payment-details">
+            <div class="payment-detail">
+              <dt>Banco</dt>
+              <dd id="transfer-bank">Configurar banco</dd>
+            </div>
+            <div class="payment-detail">
+              <dt>Número de cuenta</dt>
+              <dd id="transfer-account">Configurar cuenta</dd>
+            </div>
+            <div class="payment-detail">
+              <dt>Titular</dt>
+              <dd id="transfer-holder">Configurar titular</dd>
+            </div>
+          </dl>
+        </article>
+      </section>
+
+      <p class="sales-note"><strong>Después de pagar:</strong> conserva el comprobante y contacta a PixelWire para confirmar tu compra.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>© 2026 PixelWire. Todos los derechos reservados.</div>
+      <div class="footer-links"><a href="index.html">Inicio</a> · <a href="ventas.html">Ventas</a></div>
+    </div>
+  </footer>
+
+  <script src="js/news.js"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    function renderProducts() {
+      const container = document.getElementById("products-grid");
+      const cart = getCart();
+      container.innerHTML = "";
+
+      getStoreProducts().forEach((product) => {
+        const inCart = cart[product.id] || 0;
+        const outOfStock = product.stock <= 0;
+        const maxQty = Math.max(product.stock - inCart, 0);
+        const article = document.createElement("article");
+        article.className = "product-card";
+        article.innerHTML = `
+          <div class="product-media">
+            <img src="${product.image}" alt="${product.name}">
+          </div>
+          <div class="product-body">
+            <span class="tag ${outOfStock ? "tag--muted" : "tag--accent"}">${outOfStock ? "Agotado" : `${product.stock} disponibles`}</span>
+            <h2>${product.name}</h2>
+            <p class="product-description">${product.description}</p>
+            <div class="product-purchase">
+              <strong class="product-price">$${product.price.toFixed(2)}</strong>
+              <div class="product-cart-controls">
+                <input type="number" class="product-qty" min="1" max="${Math.max(maxQty, 1)}" value="1" data-product="${product.id}" ${outOfStock || maxQty <= 0 ? "disabled" : ""}>
+                <button class="editor-button editor-button--save add-to-cart" type="button" data-product="${product.id}" ${outOfStock || maxQty <= 0 ? "disabled" : ""}>
+                  ${outOfStock ? "Sin stock" : maxQty <= 0 ? "En el carrito" : "Agregar al carrito"}
+                </button>
+              </div>
+            </div>
+          </div>`;
+        container.appendChild(article);
+      });
+
+      container.querySelectorAll(".add-to-cart").forEach((button) => {
+        button.addEventListener("click", () => {
+          const productId = button.dataset.product;
+          const product = getStoreProduct(productId);
+          const qtyInput = container.querySelector(`.product-qty[data-product="${productId}"]`);
+          const requested = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+          const currentInCart = getCart()[productId] || 0;
+          const availableToAdd = product.stock - currentInCart;
+
+          if (availableToAdd <= 0) {
+            window.alert("Ya agregaste todo el stock disponible de este producto.");
+            return;
+          }
+
+          const toAdd = Math.min(requested, availableToAdd);
+          addToCart(productId, toAdd, product.stock);
+          if (toAdd < requested) {
+            window.alert(`Solo se agregaron ${toAdd} unidad(es): es el máximo stock disponible.`);
+          }
+          renderProducts();
+          renderCart();
+        });
+      });
+    }
+
+    function renderCart() {
+      const cart = getCart();
+      const entries = Object.entries(cart);
+      const list = document.getElementById("cart-items");
+      const emptyMessage = document.getElementById("cart-empty");
+      const totalElement = document.getElementById("cart-total");
+
+      list.innerHTML = "";
+      emptyMessage.hidden = entries.length > 0;
+      let total = 0;
+
+      entries.forEach(([productId, quantity]) => {
+        const product = getStoreProduct(productId);
+        if (!product) return;
+        const subtotal = product.price * quantity;
+        total += subtotal;
+
+        const row = document.createElement("div");
+        row.className = "cart-item";
+        row.innerHTML = `
+          <div class="cart-item-info">
+            <strong>${product.name}</strong>
+            <span>$${product.price.toFixed(2)} c/u · ${product.stock} en stock</span>
+          </div>
+          <div class="cart-item-controls">
+            <input type="number" class="cart-qty" min="1" max="${product.stock}" value="${quantity}" data-product="${productId}">
+            <span class="cart-item-subtotal">$${subtotal.toFixed(2)}</span>
+            <button class="cart-remove" type="button" data-product="${productId}" aria-label="Quitar ${product.name}">✕</button>
+          </div>`;
+        list.appendChild(row);
+      });
+
+      totalElement.textContent = `$${total.toFixed(2)}`;
+      totalElement.classList.remove("value-pulse");
+      void totalElement.offsetWidth;
+      totalElement.classList.add("value-pulse");
+
+      list.querySelectorAll(".cart-qty").forEach((input) => {
+        input.addEventListener("change", () => {
+          const productId = input.dataset.product;
+          const product = getStoreProduct(productId);
+          const clamped = setCartQuantity(productId, parseInt(input.value, 10) || 0, product.stock);
+          renderProducts();
+          renderCart();
+          if (clamped !== 0) {
+            const refreshedInput = document.querySelector(`.cart-qty[data-product="${productId}"]`);
+            if (refreshedInput) refreshedInput.value = clamped;
+          }
+        });
+      });
+
+      list.querySelectorAll(".cart-remove").forEach((button) => {
+        button.addEventListener("click", () => {
+          removeFromCart(button.dataset.product);
+          renderProducts();
+          renderCart();
+        });
+      });
+    }
+
+    document.getElementById("cart-clear").addEventListener("click", () => {
+      clearCart();
+      renderProducts();
+      renderCart();
+    });
+
+    renderProducts();
+    renderCart();
+  </script>
+  <script>
+    const paymentDefaults = {
+      mobileBank: "Configurar banco",
+      mobilePhone: "Configurar teléfono",
+      mobileId: "Configurar identificación",
+      transferBank: "Configurar banco",
+      transferAccount: "Configurar cuenta",
+      transferHolder: "Configurar titular"
+    };
+    let paymentData = paymentDefaults;
+    try {
+      paymentData = { ...paymentDefaults, ...JSON.parse(localStorage.getItem("pixelwire-payments") || "{}") };
+    } catch (error) {
+      paymentData = paymentDefaults;
+    }
+    document.getElementById("mobile-bank").textContent = paymentData.mobileBank;
+    document.getElementById("mobile-phone").textContent = paymentData.mobilePhone;
+    document.getElementById("mobile-id").textContent = paymentData.mobileId;
+    document.getElementById("transfer-bank").textContent = paymentData.transferBank;
+    document.getElementById("transfer-account").textContent = paymentData.transferAccount;
+    document.getElementById("transfer-holder").textContent = paymentData.transferHolder;
+  </script>
+</body>
+</html>
